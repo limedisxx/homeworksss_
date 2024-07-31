@@ -29,28 +29,27 @@ class Cafe:
             customer = Customer(self, self.customer_id)
             print(f"Посетитель номер {self.customer_id} прибыл.")
             self.queue.put(customer)
+            customer.start()
             time.sleep(1)
 
     def serve_customer(self, customer):
         while True:
-            self.lock.acquire()
-            free_table = None
-            for table in self.tables:
-                if not table.is_busy:
-                    free_table = table
+            with self.lock:
+                free_table = None
+                for table in self.tables:
+                    if not table.is_busy:
+                        free_table = table
+                        break
+                if free_table:
+                    free_table.is_busy = True
+                    print(f"Посетитель номер {customer.customer_id} сел за стол {free_table.number}.")
+                    time.sleep(5)
+                    print(f"Посетитель номер {customer.customer_id} покушал и ушёл.")
+                    free_table.is_busy = False
                     break
-            if free_table:
-                free_table.is_busy = True
-                self.lock.release()
-                print(f"Посетитель номер {customer.customer_id} сел за стол {free_table.number}.")
-                time.sleep(5)
-                print(f"Посетитель номер {customer.customer_id} покушал и ушёл.")
-                free_table.is_busy = False
-                break
-            else:
-                self.lock.release()
-                print(f"Посетитель номер {customer.customer_id} ожидает свободный стол.")
-                time.sleep(1)
+                else:
+                    print(f"Посетитель номер {customer.customer_id} ожидает свободный стол.")
+            time.sleep(1)
 
 table1 = Table(1)
 table2 = Table(2)
@@ -63,8 +62,3 @@ customer_arrival_thread = threading.Thread(target=cafe.customer_arrival)
 customer_arrival_thread.start()
 
 customer_arrival_thread.join()
-
-while not cafe.queue.empty():
-    customer = cafe.queue.get()
-    customer.start()
-    customer.join()
