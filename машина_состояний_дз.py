@@ -7,8 +7,7 @@ from aiogram.filters.state import State, StatesGroup
 from aiogram.filters import Сommand
 from aiogram.utils import executor
 
-# Инициализация бота
-API_TOKEN = 'YOUR_API_TOKEN_HERE'
+API_TOKEN = '...'
 bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
@@ -47,7 +46,6 @@ async def send_calories(message: Message, state: FSMContext):
     growth = int(data['growth'])
     weight = int(data['weight'])
 
-    # Пример формулы Миффлина - Сан Жеора для расчета калорий для женщин
     bmr = 10 * weight + 6.25 * growth - 5 * age - 161
     await message.answer(f"Ваша дневная норма калорий: {bmr} ккал.")
     await state.finish()
