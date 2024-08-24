@@ -7,8 +7,7 @@ from aiogram.filters.state import State, StatesGroup
 from aiogram.filters import Command
 from aiogram.utils import executor
 
-# Инициализация бота
-API_TOKEN = 'YOUR_API_TOKEN_HERE'
+API_TOKEN = '...'
 bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
